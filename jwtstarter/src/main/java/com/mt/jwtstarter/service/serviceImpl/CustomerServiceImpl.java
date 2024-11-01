@@ -28,10 +28,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponseDto getCustomerById(Long id) {
+    public CustomerResponseDto getCustomerDtoById(Long id) {
         return CustomerMapper.mapToCustomerResponseDto(customerRepository.findById(id).orElseThrow(
                 () -> new CustomerNotFound("Customer not found")
         ));
+    }
+
+    @Override
+    public Customer getCustomerById(Long id) {
+        return customerRepository.findById(id).orElseThrow(
+                () -> new CustomerNotFound("Customer not found")
+        );
+
     }
 
     @Override
