@@ -6,8 +6,11 @@ import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
 import com.mt.jwtstarter.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ticket")
@@ -20,5 +23,20 @@ public class TicketController {
     @PostMapping("/")
     public ResponseEntity<TicketResponseDto> createTicket(@Valid @RequestBody TicketRequestDto ticketRequestDto) {
         return ResponseEntity.ok().body(ticketService.createTicket(ticketRequestDto));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsByUserId(@PathVariable int userId, @RequestParam int pageNumber, @RequestParam int pageSize) {
+        return ResponseEntity.ok().body(ticketService.getFollowedTickets(userId, pageNumber, pageSize));
+    }
+
+    @PostMapping("/follow/{ticketId}")
+    public ResponseEntity<Map<String,String>> followTicket(@PathVariable Long ticketId) {
+        return ResponseEntity.ok().body(ticketService.followTicket(ticketId));
+    }
+
+    @PostMapping("/unfollow/{ticketId}")
+    public ResponseEntity<Map<String,String>> unfollowTicket(@PathVariable Long ticketId) {
+        return ResponseEntity.ok().body(ticketService.unfollowTicket(ticketId));
     }
 }
