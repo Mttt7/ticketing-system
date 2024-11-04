@@ -2,11 +2,11 @@ package com.mt.jwtstarter.controller;
 
 import com.mt.jwtstarter.dto.Customer.CustomerRequestDto;
 import com.mt.jwtstarter.dto.Customer.CustomerResponseDto;
+import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
 import com.mt.jwtstarter.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +44,12 @@ public class CustomerController {
 
         Page<CustomerResponseDto> customers = customerService.searchCustomers(phone, email, firstName, lastName, pageNumber, pageSize);
         return ResponseEntity.ok(customers);
+    }
+
+    @GetMapping("/{id}/tickets")
+    public ResponseEntity<Page<TicketResponseDto>> getCustomerTickets(@PathVariable Long id,
+                                                                      @RequestParam(defaultValue = "0") int pageNumber,
+                                                                      @RequestParam(defaultValue = "10") int pageSize){
+        return ResponseEntity.ok(customerService.getCustomerTickets(id, pageNumber, pageSize));
     }
 }

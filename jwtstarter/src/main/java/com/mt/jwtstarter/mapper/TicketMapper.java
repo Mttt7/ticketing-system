@@ -8,7 +8,7 @@ import com.mt.jwtstarter.model.*;
 import com.mt.jwtstarter.repository.CategoryRepository;
 import com.mt.jwtstarter.repository.SubcategoryRepository;
 import com.mt.jwtstarter.service.AuthService;
-import com.mt.jwtstarter.service.CustomerService;
+import com.mt.jwtstarter.service.CustomerLookupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +16,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TicketMapper {
 
-    private final CustomerService customerService;
+    private final CustomerLookupService customerLookupService;
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final AuthService authService;
-    public  Ticket mapToTicket(TicketRequestDto ticketRequestDto){
+
+    public Ticket mapToTicket(TicketRequestDto ticketRequestDto) {
         UserEntity user = authService.getLoggedUser();
-        Customer customer = customerService.getCustomerById(ticketRequestDto.getCustomerId());
+        Customer customer = customerLookupService.getCustomerById(ticketRequestDto.getCustomerId());
         Category category = categoryRepository.findById(ticketRequestDto.getCategoryId()).orElseThrow(
-                ()-> new CategoryNotFound("Category not found")
+                () -> new CategoryNotFound("Category not found")
         );
         Subcategory subcategory = subcategoryRepository.findById(ticketRequestDto.getSubcategoryId()).orElseThrow(
-                ()-> new SubcategoryNotFound("Subcategory not found")
+                () -> new SubcategoryNotFound("Subcategory not found")
         );
 
         return Ticket.builder()
@@ -42,7 +43,7 @@ public class TicketMapper {
                 .build();
     }
 
-    public TicketResponseDto mapToTicketResponseDto(Ticket ticket){
+    public TicketResponseDto mapToTicketResponseDto(Ticket ticket) {
         return TicketResponseDto.builder()
                 .id(ticket.getId())
                 .channel(ticket.getChannel())
