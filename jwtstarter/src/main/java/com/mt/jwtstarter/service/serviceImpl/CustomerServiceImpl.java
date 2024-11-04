@@ -11,6 +11,7 @@ import com.mt.jwtstarter.specification.CustomerSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,9 @@ public class CustomerServiceImpl implements CustomerService {
                 .and(CustomerSpecification.hasEmail(email))
                 .and(CustomerSpecification.hasPhone(phone));
 
-        return customerRepository.findAll(spec, PageRequest.of(pageNumber, pageSize))
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("id"));
+
+        return customerRepository.findAll(spec, pageRequest)
                 .map(CustomerMapper::mapToCustomerResponseDto);
     }
 

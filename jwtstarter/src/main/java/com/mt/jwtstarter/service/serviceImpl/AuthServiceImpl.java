@@ -96,4 +96,10 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
         return StringResponseMapper.mapToMap("success");
     }
+
+    @Override
+    public Map<String, String> getSelfId() {
+        UserEntity user = getLoggedUser();
+        return StringResponseMapper.mapToMap(String.valueOf(user.getId()));
+    }
 }

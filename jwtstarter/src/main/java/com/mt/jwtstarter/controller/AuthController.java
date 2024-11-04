@@ -62,4 +62,9 @@ public class AuthController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/selfId")
+    public ResponseEntity<Map<String, String>> getSelfId() {
+        return ResponseEntity.ok().body(authService.getSelfId());
+    }
 }

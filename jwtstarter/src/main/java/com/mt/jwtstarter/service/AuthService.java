@@ -13,4 +13,6 @@ public interface AuthService {
     AuthResponseDto login(LoginDto loginDto);
 
     Map<String, String> registerUser(RegisterDto registerDto);
+
+    Map<String, String> getSelfId();
 }

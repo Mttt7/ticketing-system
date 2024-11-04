@@ -10,7 +10,10 @@ public class CustomerSpecification {
             if (firstName == null || firstName.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("firstName"), firstName);
+            return criteriaBuilder.equal(
+                    criteriaBuilder.lower(root.get("firstName")),
+                    firstName.toLowerCase()
+            );
         };
     }
 
@@ -19,7 +22,10 @@ public class CustomerSpecification {
             if (lastName == null || lastName.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("lastName"), lastName);
+            return criteriaBuilder.equal(
+                    criteriaBuilder.lower(root.get("lastName")),
+                    lastName.toLowerCase()
+            );
         };
     }
 
@@ -28,7 +34,10 @@ public class CustomerSpecification {
             if (email == null || email.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("email"), email);
+            return criteriaBuilder.equal(
+                    criteriaBuilder.lower(root.get("email")),
+                    email.toLowerCase()
+            );
         };
     }
 
@@ -37,7 +46,10 @@ public class CustomerSpecification {
             if (phone == null || phone.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("phone"), phone);
+            return criteriaBuilder.equal(
+                    criteriaBuilder.lower(root.get("phone")),
+                    phone.toLowerCase()
+            );
         };
     }
 }
