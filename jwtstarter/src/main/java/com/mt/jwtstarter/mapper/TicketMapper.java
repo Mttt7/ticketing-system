@@ -50,7 +50,7 @@ public class TicketMapper {
                 .content(ticket.getContent())
                 .category(CategoryMapper.mapToCategoryResponseDto(ticket.getCategory()))
                 .subcategory(SubcategoryMapper.mapToSubcategoryResponseDto(ticket.getSubcategory()))
-                .isOpen(ticket.isOpen())
+                .isOpen(ticket.getIsOpen())
                 .priority(ticket.getPriority())
                 .openedBy(UserMapper.mapToUserResponseDto(ticket.getOpenedBy()))
                 .createdAt(ticket.getCreatedAt())

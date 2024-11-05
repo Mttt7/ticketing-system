@@ -6,7 +6,6 @@ import com.mt.jwtstarter.mapper.UserMapper;
 import com.mt.jwtstarter.model.UserEntity;
 import com.mt.jwtstarter.repository.UserRepository;
 import com.mt.jwtstarter.service.UserService;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,6 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserProfileById(Long userId) {
         return UserMapper.mapToUserResponseDto(userRepository.findById(userId).orElseThrow(
-                ()-> new UserNotFound("User Not found!"))
+                () -> new UserNotFound("User Not found!"))
         );
     }
 
@@ -56,8 +58,16 @@ public class UserServiceImpl implements UserService {
 
         return new PageImpl<>(
                 users.getContent().stream().map(UserMapper::mapToUserResponseDto).collect(Collectors.toList()),
-                PageRequest.of(pageNumber,pageSize),
+                PageRequest.of(pageNumber, pageSize),
                 users.getTotalElements()
         );
+    }
+
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserMapper::mapToUserResponseDto)
+                .collect(Collectors.toList());
+
     }
 }

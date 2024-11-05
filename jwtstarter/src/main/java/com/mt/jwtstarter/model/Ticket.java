@@ -1,6 +1,5 @@
 package com.mt.jwtstarter.model;
 
-
 import com.mt.jwtstarter.enums.Channel;
 import com.mt.jwtstarter.enums.Priority;
 import jakarta.persistence.*;
@@ -14,7 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "customer")
+@Table(name = "ticket")
 @Data
 @Builder
 @NoArgsConstructor
@@ -30,44 +29,44 @@ public class Ticket {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name="content")
+    @Column(name = "content")
     private String content;
 
-    @Column(name="is_open")
-    private boolean isOpen;
+    @Column(name = "is_open")
+    private Boolean isOpen;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="channel")
+    @Column(name = "channel")
     private Channel channel;
 
     @ManyToOne
-    @JoinColumn(name="category_id")
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name="sub_category_id")
+    @JoinColumn(name = "sub_category_id")
     private Subcategory subcategory;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="priority")
+    @Column(name = "priority")
     private Priority priority;
 
     @ManyToOne
-    @JoinColumn(name="opened_by_user_id")
+    @JoinColumn(name = "opened_by_user_id")
     private UserEntity openedBy;
 
     @ManyToOne
-    @JoinColumn(name="closed_by_user_id")
+    @JoinColumn(name = "closed_by_user_id")
     private UserEntity closedBy;
 
     @CreationTimestamp
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private Timestamp createdAt;
 
     @UpdateTimestamp
-    @Column(name="updated_at")
+    @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name="closed_at")
+    @Column(name = "closed_at")
     private Timestamp closedAt;
 }

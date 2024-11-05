@@ -1,8 +1,9 @@
 package com.mt.jwtstarter.controller;
 
-
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
+import com.mt.jwtstarter.enums.Channel;
+import com.mt.jwtstarter.enums.Priority;
 import com.mt.jwtstarter.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
@@ -31,12 +34,39 @@ public class TicketController {
     }
 
     @PostMapping("/follow/{ticketId}")
-    public ResponseEntity<Map<String,String>> followTicket(@PathVariable Long ticketId) {
+    public ResponseEntity<Map<String, String>> followTicket(@PathVariable Long ticketId) {
         return ResponseEntity.ok().body(ticketService.followTicket(ticketId));
     }
 
     @PostMapping("/unfollow/{ticketId}")
-    public ResponseEntity<Map<String,String>> unfollowTicket(@PathVariable Long ticketId) {
+    public ResponseEntity<Map<String, String>> unfollowTicket(@PathVariable Long ticketId) {
         return ResponseEntity.ok().body(ticketService.unfollowTicket(ticketId));
+    }
+
+    @GetMapping("/search")
+    public Page<TicketResponseDto> searchTickets(
+            @RequestParam(required = false) Long ticketId,
+            @RequestParam(required = false) Long customerId,
+            @RequestParam(required = false) String customerEmail,
+            @RequestParam(required = false) String customerPhone,
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) Boolean isOpen,
+            @RequestParam(required = false) Channel channel,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long subcategoryId,
+            @RequestParam(required = false) Priority priority,
+            @RequestParam(required = false) Long openedById,
+            @RequestParam(required = false) Long closedById,
+            @RequestParam(required = false) LocalDate createdAfter,
+            @RequestParam(required = false) LocalDate createdBefore,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
+        Timestamp createdAfterTimestamp = createdAfter != null ? Timestamp.valueOf(createdAfter.atStartOfDay()) : null;
+        Timestamp createdBeforeTimestamp = createdBefore != null ? Timestamp.valueOf(createdBefore.atTime(23, 59, 59)) : null;
+
+        return ticketService.searchTickets(ticketId, customerId, customerEmail, customerPhone, content, isOpen, channel,
+                categoryId, subcategoryId, priority, openedById, closedById,
+                createdAfterTimestamp, createdBeforeTimestamp, pageNumber, pageSize);
     }
 }

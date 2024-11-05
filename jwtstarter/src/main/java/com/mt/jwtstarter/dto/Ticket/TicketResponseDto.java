@@ -19,7 +19,7 @@ public class TicketResponseDto {
     private Long id;
     private Customer customer;
     private String content;
-    private boolean isOpen;
+    private Boolean isOpen;
     private Channel channel;
     private CategoryResponseDto category;
     private SubcategoryResponseDto subcategory;
