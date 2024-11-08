@@ -62,11 +62,8 @@ public class TicketController {
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize) {
 
-        Timestamp createdAfterTimestamp = createdAfter != null ? Timestamp.valueOf(createdAfter.atStartOfDay()) : null;
-        Timestamp createdBeforeTimestamp = createdBefore != null ? Timestamp.valueOf(createdBefore.atTime(23, 59, 59)) : null;
-
         return ticketService.searchTickets(ticketId, customerId, customerEmail, customerPhone, content, isOpen, channel,
                 categoryId, subcategoryId, priority, openedById, closedById,
-                createdAfterTimestamp, createdBeforeTimestamp, pageNumber, pageSize);
+                createdAfter, createdBefore, pageNumber, pageSize);
     }
 }

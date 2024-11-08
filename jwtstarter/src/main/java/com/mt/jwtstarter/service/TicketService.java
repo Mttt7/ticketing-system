@@ -7,6 +7,7 @@ import com.mt.jwtstarter.enums.Priority;
 import org.springframework.data.domain.Page;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface TicketService {
@@ -18,5 +19,5 @@ public interface TicketService {
 
     Map<String, String> unfollowTicket(Long ticketId);
 
-    Page<TicketResponseDto> searchTickets(Long ticketId, Long customerId, String customerEmail, String customerPhone, String content, Boolean isOpen, Channel channel, Long categoryId, Long subcategoryId, Priority priority, Long openedById, Long closedById, Timestamp createdAfter, Timestamp createdBefore, int pageNumber, int pageSize);
+    Page<TicketResponseDto> searchTickets(Long ticketId, Long customerId, String customerEmail, String customerPhone, String content, Boolean isOpen, Channel channel, Long categoryId, Long subcategoryId, Priority priority, Long openedById, Long closedById, LocalDate createdAfter, LocalDate createdBefore, int pageNumber, int pageSize);
 }

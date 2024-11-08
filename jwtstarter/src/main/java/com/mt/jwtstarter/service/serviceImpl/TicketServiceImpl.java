@@ -23,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -114,10 +115,14 @@ public class TicketServiceImpl implements TicketService {
                                                  Priority priority,
                                                  Long openedById,
                                                  Long closedById,
-                                                 Timestamp createdAfter,
-                                                 Timestamp createdBefore,
+                                                 LocalDate createdAfter,
+                                                 LocalDate createdBefore,
                                                  int pageNumber,
                                                  int pageSize) {
+
+        Timestamp createdAfterTimestamp = createdAfter != null ? Timestamp.valueOf(createdAfter.atStartOfDay()) : null;
+        Timestamp createdBeforeTimestamp = createdBefore != null ? Timestamp.valueOf(createdBefore.atTime(23, 59, 59)) : null;
+
         Specification<Ticket> spec = Specification.where(TicketSpecification.hasCustomerId(customerId))
                 .and(TicketSpecification.hasTicketId(ticketId))
                 .and(TicketSpecification.hasCustomerEmail(customerEmail))
@@ -130,8 +135,8 @@ public class TicketServiceImpl implements TicketService {
                 .and(TicketSpecification.hasPriority(priority))
                 .and(TicketSpecification.hasOpenedById(openedById))
                 .and(TicketSpecification.hasClosedById(closedById))
-                .and(TicketSpecification.createdAfter(createdAfter))
-                .and(TicketSpecification.createdBefore(createdBefore));
+                .and(TicketSpecification.createdAfter(createdAfterTimestamp))
+                .and(TicketSpecification.createdBefore(createdBeforeTimestamp));
 
         Page<Ticket> response = ticketRepository.findAll(spec, PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending()));
         return new PageImpl<>(response.getContent().stream()
