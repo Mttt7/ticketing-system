@@ -143,4 +143,10 @@ public class TicketServiceImpl implements TicketService {
                 .map(ticketMapper::mapToTicketResponseDto)
                 .collect(Collectors.toList()), PageRequest.of(pageNumber, pageSize), response.getTotalElements());
     }
+
+    @Override
+    public TicketResponseDto getTicketById(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new RuntimeException("Ticket not found"));
+        return ticketMapper.mapToTicketResponseDto(ticket);
+    }
 }

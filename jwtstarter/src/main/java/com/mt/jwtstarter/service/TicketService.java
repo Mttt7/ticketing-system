@@ -20,4 +20,6 @@ public interface TicketService {
     Map<String, String> unfollowTicket(Long ticketId);
 
     Page<TicketResponseDto> searchTickets(Long ticketId, Long customerId, String customerEmail, String customerPhone, String content, Boolean isOpen, Channel channel, Long categoryId, Long subcategoryId, Priority priority, Long openedById, Long closedById, LocalDate createdAfter, LocalDate createdBefore, int pageNumber, int pageSize);
+
+    TicketResponseDto getTicketById(Long ticketId);
 }

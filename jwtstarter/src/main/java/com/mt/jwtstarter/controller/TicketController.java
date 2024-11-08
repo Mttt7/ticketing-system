@@ -28,6 +28,11 @@ public class TicketController {
         return ResponseEntity.ok().body(ticketService.createTicket(ticketRequestDto));
     }
 
+    @GetMapping("/{ticketId}")
+    public ResponseEntity<TicketResponseDto> getTicketById(@PathVariable Long ticketId) {
+        return ResponseEntity.ok().body(ticketService.getTicketById(ticketId));
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsByUserId(@PathVariable int userId, @RequestParam int pageNumber, @RequestParam int pageSize) {
         return ResponseEntity.ok().body(ticketService.getFollowedTickets(userId, pageNumber, pageSize));
