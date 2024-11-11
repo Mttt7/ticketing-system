@@ -35,13 +35,14 @@ public class TicketController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsByUserId(@PathVariable Long userId, @RequestParam int pageNumber, @RequestParam int pageSize) {
-        return ResponseEntity.ok().body(ticketService.getFollowedTicketsByUserId(userId, pageNumber, pageSize));
+    public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsByUserId(@PathVariable Long userId, @RequestParam int pageNumber, @RequestParam int pageSize,
+                                                                              @RequestParam String sort) {
+        return ResponseEntity.ok().body(ticketService.getFollowedTicketsByUserId(userId, pageNumber, pageSize, sort));
     }
 
     @GetMapping("/followed")
-    public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsForLoggedUser(@RequestParam int pageNumber, @RequestParam int pageSize) {
-        return ResponseEntity.ok().body(ticketService.getFollowedTickets(pageNumber, pageSize));
+    public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsForLoggedUser(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam String sort) {
+        return ResponseEntity.ok().body(ticketService.getFollowedTickets(pageNumber, pageSize, sort));
     }
 
     @GetMapping("/{ticketId}/followers")

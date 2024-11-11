@@ -14,7 +14,7 @@ import java.util.Map;
 public interface TicketService {
     TicketResponseDto createTicket(TicketRequestDto ticketRequestDto);
 
-    Page<TicketResponseDto> getFollowedTickets(int pageNumber, int pageSize);
+    Page<TicketResponseDto> getFollowedTickets(int pageNumber, int pageSize,String sort);
 
     Map<String, String> followTicket(Long ticketId);
 
@@ -24,7 +24,7 @@ public interface TicketService {
 
     TicketResponseDto getTicketById(Long ticketId);
 
-    Page<TicketResponseDto> getFollowedTicketsByUserId(Long userId, int pageNumber, int pageSize);
+    Page<TicketResponseDto> getFollowedTicketsByUserId(Long userId, int pageNumber, int pageSize, String sort);
 
     Map<String, Boolean> isTicketFollowed(Long ticketId);
 

@@ -57,9 +57,16 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Page<TicketResponseDto> getFollowedTicketsByUserId(Long userId, int pageNumber, int pageSize) {
+    public Page<TicketResponseDto> getFollowedTicketsByUserId(Long userId, int pageNumber, int pageSize, String sort) {
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Page<UserTicketFollower> response = userTicketFollowerRepository.findAllByUser(user, PageRequest.of(pageNumber, pageSize));
+
+        Sort sortType;
+        if (sort.equals("dateDesc")) {
+            sortType = Sort.by("createdAt").descending();
+        } else {
+            sortType = Sort.by("createdAt").ascending();
+        }
+        Page<UserTicketFollower> response = userTicketFollowerRepository.findAllByUserAndTicket_IsOpen(user, Boolean.TRUE, PageRequest.of(pageNumber, pageSize, sortType));
 
         return new PageImpl<>(
                 response.getContent().stream().map(userTicketFollower -> ticketMapper.mapToTicketResponseDto(userTicketFollower.getTicket())).collect(Collectors.toList()),
@@ -103,13 +110,21 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Page<TicketResponseDto> getFollowedTickets(int pageNumber, int pageSize) {
+    public Page<TicketResponseDto> getFollowedTickets(int pageNumber, int pageSize, String sort) {
         UserEntity user = authService.getLoggedUser();
-        Page<UserTicketFollower> response = userTicketFollowerRepository.findAllByUser(user, PageRequest.of(pageNumber, pageSize));
+
+        Sort sortType = sort.equals("dateDesc")
+                ? Sort.by("ticket.createdAt").descending()
+                : Sort.by("ticket.createdAt").ascending();
+
+        Page<UserTicketFollower> response = userTicketFollowerRepository
+                .findAllByUserAndTicket_IsOpen(user, Boolean.TRUE, PageRequest.of(pageNumber, pageSize, sortType));
 
         return new PageImpl<>(
-                response.getContent().stream().map(userTicketFollower -> ticketMapper.mapToTicketResponseDto(userTicketFollower.getTicket())).collect(Collectors.toList()),
-                PageRequest.of(pageNumber, pageSize),
+                response.getContent().stream()
+                        .map(userTicketFollower -> ticketMapper.mapToTicketResponseDto(userTicketFollower.getTicket()))
+                        .collect(Collectors.toList()),
+                PageRequest.of(pageNumber, pageSize, sortType),
                 response.getTotalElements()
         );
     }

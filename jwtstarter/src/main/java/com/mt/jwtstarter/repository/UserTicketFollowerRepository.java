@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface UserTicketFollowerRepository extends JpaRepository<UserTicketFollower, Long> {
 
-    Page<UserTicketFollower> findAllByUser(UserEntity user, Pageable pageable);
+    Page<UserTicketFollower> findAllByUserAndTicket_IsOpen(UserEntity user, Boolean isOpen, Pageable pageable);
 
     UserTicketFollower findByUser(UserEntity user);
 
