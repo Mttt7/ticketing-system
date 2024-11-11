@@ -26,6 +26,7 @@ public class TicketResponseDto {
     private Priority priority;
     private UserResponseDto openedBy;
     private UserResponseDto closedBy;
+    private Boolean isFollowed;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp closedAt;

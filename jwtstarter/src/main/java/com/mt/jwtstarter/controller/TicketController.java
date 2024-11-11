@@ -1,5 +1,6 @@
 package com.mt.jwtstarter.controller;
 
+import com.mt.jwtstarter.dto.Auth.UserResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
 import com.mt.jwtstarter.enums.Channel;
@@ -11,8 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,8 +35,23 @@ public class TicketController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsByUserId(@PathVariable int userId, @RequestParam int pageNumber, @RequestParam int pageSize) {
-        return ResponseEntity.ok().body(ticketService.getFollowedTickets(userId, pageNumber, pageSize));
+    public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsByUserId(@PathVariable Long userId, @RequestParam int pageNumber, @RequestParam int pageSize) {
+        return ResponseEntity.ok().body(ticketService.getFollowedTicketsByUserId(userId, pageNumber, pageSize));
+    }
+
+    @GetMapping("/followed")
+    public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsForLoggedUser(@RequestParam int pageNumber, @RequestParam int pageSize) {
+        return ResponseEntity.ok().body(ticketService.getFollowedTickets(pageNumber, pageSize));
+    }
+
+    @GetMapping("/{ticketId}/followers")
+    public ResponseEntity<List<UserResponseDto>> getFollowersByTicketId(@PathVariable Long ticketId) {
+        return ResponseEntity.ok().body(ticketService.getFollowersByTicketId(ticketId));
+    }
+
+    @GetMapping("/is-followed/{ticketId}")
+    public ResponseEntity<Map<String, Boolean>> isTicketFollowed(@PathVariable Long ticketId) {
+        return ResponseEntity.ok().body(ticketService.isTicketFollowed(ticketId));
     }
 
     @PostMapping("/follow/{ticketId}")
@@ -46,6 +62,11 @@ public class TicketController {
     @PostMapping("/unfollow/{ticketId}")
     public ResponseEntity<Map<String, String>> unfollowTicket(@PathVariable Long ticketId) {
         return ResponseEntity.ok().body(ticketService.unfollowTicket(ticketId));
+    }
+
+    @PostMapping("/follow/{ticketId}/{userId}")
+    public ResponseEntity<Map<String, String>> followTicketForOtherUser(@PathVariable Long ticketId, @PathVariable Long userId) {
+        return ResponseEntity.ok().body(ticketService.followTicketForOtherUser(ticketId, userId));
     }
 
     @GetMapping("/search")

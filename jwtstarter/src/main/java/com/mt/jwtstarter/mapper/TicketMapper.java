@@ -7,10 +7,13 @@ import com.mt.jwtstarter.exception.SubcategoryNotFound;
 import com.mt.jwtstarter.model.*;
 import com.mt.jwtstarter.repository.CategoryRepository;
 import com.mt.jwtstarter.repository.SubcategoryRepository;
+import com.mt.jwtstarter.repository.UserTicketFollowerRepository;
 import com.mt.jwtstarter.service.AuthService;
 import com.mt.jwtstarter.service.CustomerLookupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ public class TicketMapper {
     private final CustomerLookupService customerLookupService;
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
+    private final UserTicketFollowerRepository userTicketFollowerRepository;
     private final AuthService authService;
 
     public Ticket mapToTicket(TicketRequestDto ticketRequestDto) {
@@ -44,6 +48,12 @@ public class TicketMapper {
     }
 
     public TicketResponseDto mapToTicketResponseDto(Ticket ticket) {
+        AtomicBoolean isFollowed = new AtomicBoolean(false);
+        UserEntity user = authService.getLoggedUser();
+        userTicketFollowerRepository.findByUserAndTicket(user, ticket).ifPresentOrElse(
+                userTicketFollower -> isFollowed.set(true),
+                () -> isFollowed.set(false)
+        );
         return TicketResponseDto.builder()
                 .id(ticket.getId())
                 .channel(ticket.getChannel())
@@ -55,6 +65,7 @@ public class TicketMapper {
                 .openedBy(UserMapper.mapToUserResponseDto(ticket.getOpenedBy()))
                 .createdAt(ticket.getCreatedAt())
                 .updatedAt(ticket.getUpdatedAt())
+                .isFollowed(isFollowed.get())
                 .closedAt(ticket.getClosedAt())
                 .closedBy(ticket.getClosedBy() != null ? UserMapper.mapToUserResponseDto(ticket.getClosedBy()) : null)
                 .customer(ticket.getCustomer())
