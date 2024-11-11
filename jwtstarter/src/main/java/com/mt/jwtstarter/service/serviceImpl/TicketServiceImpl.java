@@ -53,14 +53,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         Ticket ticket = ticketMapper.mapToTicket(ticketRequestDto);
-        Ticket ticketDb = ticketRepository.save(ticket);
-
-        UserTicketFollower userTicketFollower = new UserTicketFollower();
-        userTicketFollower.setUser(user);
-        userTicketFollower.setTicket(ticketDb);
-        userTicketFollowerRepository.save(userTicketFollower);
-
-        return ticketMapper.mapToTicketResponseDto(ticketDb);
+        return ticketMapper.mapToTicketResponseDto(ticketRepository.save(ticket));
     }
 
     @Override
