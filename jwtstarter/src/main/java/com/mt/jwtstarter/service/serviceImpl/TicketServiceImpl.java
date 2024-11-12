@@ -2,6 +2,7 @@ package com.mt.jwtstarter.service.serviceImpl;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
 import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
+import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
 import com.mt.jwtstarter.exception.CategoryNotFound;
@@ -36,6 +37,7 @@ public class TicketServiceImpl implements TicketService {
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public TicketResponseDto createTicket(TicketRequestDto ticketRequestDto) {
@@ -105,6 +107,28 @@ public class TicketServiceImpl implements TicketService {
         List<UserTicketFollower> utfs = userTicketFollowerRepository.findAllByTicket(ticket);
 
         return utfs.stream().map(utf -> UserMapper.mapToUserResponseDto(utf.getUser())).collect(Collectors.toList());
+    }
+
+    @Override
+    public StatsResponseDto getStats() {
+        UserEntity user = authService.getLoggedUser();
+        Long totalTickets = ticketRepository.count();
+        Long openedToday = ticketRepository.countByCreatedAtAfter(Timestamp.valueOf(java.time.LocalDate.now().atStartOfDay()));
+        Long closedToday = ticketRepository.countByClosedAtAfter(Timestamp.valueOf(java.time.LocalDate.now().atStartOfDay()));
+        Long openedTodayUser = ticketRepository.countByOpenedByAndCreatedAtAfter(user, Timestamp.valueOf(java.time.LocalDate.now().atStartOfDay()));
+        Long closedTodayUser = ticketRepository.countByClosedByAndClosedAtAfter(user, Timestamp.valueOf(java.time.LocalDate.now().atStartOfDay()));
+        Long commentedTodayUser = commentRepository.countDistinctTicketsCommentedToday(user, Timestamp.valueOf(java.time.LocalDate.now().atStartOfDay()));
+        Long openFollowed = userTicketFollowerRepository.countByUserAndTicket_IsOpen(user, Boolean.TRUE);
+
+        return StatsResponseDto.builder()
+                .totalTickets(totalTickets)
+                .openedToday(openedToday)
+                .closedToday(closedToday)
+                .openedTodayUser(openedTodayUser)
+                .closedTodayUser(closedTodayUser)
+                .commentedTodayUser(commentedTodayUser)
+                .openFollowed(openFollowed)
+                .build();
     }
 
     @Override

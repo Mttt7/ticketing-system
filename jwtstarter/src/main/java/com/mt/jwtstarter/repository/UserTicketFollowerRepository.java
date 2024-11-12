@@ -19,4 +19,6 @@ public interface UserTicketFollowerRepository extends JpaRepository<UserTicketFo
     Optional<UserTicketFollower> findByUserAndTicket(UserEntity user, Ticket ticket);
 
     List<UserTicketFollower> findAllByTicket(Ticket ticket);
+
+    Long countByUserAndTicket_IsOpen(UserEntity user, Boolean aTrue);
 }

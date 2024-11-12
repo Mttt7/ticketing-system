@@ -2,6 +2,7 @@ package com.mt.jwtstarter.service;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
 import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
+import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
 import org.springframework.data.domain.Page;
@@ -29,4 +30,6 @@ public interface TicketService {
     Map<String, String> followTicketForOtherUser(Long ticketId, Long userId);
 
     List<UserResponseDto> getFollowersByTicketId(Long ticketId);
+
+    StatsResponseDto getStats();
 }

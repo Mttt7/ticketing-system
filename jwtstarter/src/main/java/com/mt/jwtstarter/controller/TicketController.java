@@ -2,6 +2,7 @@ package com.mt.jwtstarter.controller;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
 import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
+import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
 import com.mt.jwtstarter.service.TicketService;
@@ -75,5 +76,10 @@ public class TicketController {
             @RequestParam(defaultValue = "10") int pageSize) {
 
         return ticketService.searchTickets(searchTicketRequestDto, pageNumber, pageSize);
+    }
+
+    @GetMapping("/dashboard/stats")
+    public ResponseEntity<StatsResponseDto> getStats() {
+        return ResponseEntity.ok().body(ticketService.getStats());
     }
 }
