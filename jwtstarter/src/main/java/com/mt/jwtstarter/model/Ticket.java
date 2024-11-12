@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "ticket")
@@ -62,6 +63,9 @@ public class Ticket {
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @OneToMany(mappedBy = "ticket")
+    private List<UserTicketFollower> followers;
 
     @UpdateTimestamp
     @Column(name = "updated_at")

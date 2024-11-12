@@ -1,10 +1,9 @@
 package com.mt.jwtstarter.service.serviceImpl;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
+import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
-import com.mt.jwtstarter.enums.Channel;
-import com.mt.jwtstarter.enums.Priority;
 import com.mt.jwtstarter.exception.CategoryNotFound;
 import com.mt.jwtstarter.exception.UserNotFound;
 import com.mt.jwtstarter.mapper.TicketMapper;
@@ -23,7 +22,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -159,38 +157,29 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Page<TicketResponseDto> searchTickets(Long ticketId,
-                                                 Long customerId,
-                                                 String customerEmail,
-                                                 String customerPhone,
-                                                 String content,
-                                                 Boolean isOpen,
-                                                 Channel channel,
-                                                 Long categoryId,
-                                                 Long subcategoryId,
-                                                 Priority priority,
-                                                 Long openedById,
-                                                 Long closedById,
-                                                 LocalDate createdAfter,
-                                                 LocalDate createdBefore,
+    public Page<TicketResponseDto> searchTickets(SearchTicketRequestDto searchTicketRequestDto,
                                                  int pageNumber,
                                                  int pageSize) {
 
-        Timestamp createdAfterTimestamp = createdAfter != null ? Timestamp.valueOf(createdAfter.atStartOfDay()) : null;
-        Timestamp createdBeforeTimestamp = createdBefore != null ? Timestamp.valueOf(createdBefore.atTime(23, 59, 59)) : null;
 
-        Specification<Ticket> spec = Specification.where(TicketSpecification.hasCustomerId(customerId))
-                .and(TicketSpecification.hasTicketId(ticketId))
-                .and(TicketSpecification.hasCustomerEmail(customerEmail))
-                .and(TicketSpecification.hasCustomerPhone(customerPhone))
-                .and(TicketSpecification.hasContent(content))
-                .and(TicketSpecification.isOpen(isOpen))
-                .and(TicketSpecification.hasChannel(channel))
-                .and(TicketSpecification.hasCategoryId(categoryId))
-                .and(TicketSpecification.hasSubcategoryId(subcategoryId))
-                .and(TicketSpecification.hasPriority(priority))
-                .and(TicketSpecification.hasOpenedById(openedById))
-                .and(TicketSpecification.hasClosedById(closedById))
+        Timestamp createdAfterTimestamp = searchTicketRequestDto.getCreatedAfter() != null
+                ? Timestamp.valueOf(searchTicketRequestDto.getCreatedAfter().atStartOfDay()) : null;
+        Timestamp createdBeforeTimestamp = searchTicketRequestDto.getCreatedBefore() != null
+                ? Timestamp.valueOf(searchTicketRequestDto.getCreatedBefore().atTime(23, 59, 59)) : null;
+
+        Specification<Ticket> spec = Specification.where(TicketSpecification.hasCustomerId(searchTicketRequestDto.getCustomerId()))
+                .and(TicketSpecification.hasTicketId(searchTicketRequestDto.getTicketId()))
+                .and(TicketSpecification.hasCustomerEmail(searchTicketRequestDto.getCustomerEmail()))
+                .and(TicketSpecification.hasCustomerPhone(searchTicketRequestDto.getCustomerPhone()))
+                .and(TicketSpecification.hasContent(searchTicketRequestDto.getContent()))
+                .and(TicketSpecification.isOpen(searchTicketRequestDto.getIsOpen()))
+                .and(TicketSpecification.isFollowed(authService.getLoggedUser(), searchTicketRequestDto.getIsFollowed()))
+                .and(TicketSpecification.hasChannel(searchTicketRequestDto.getChannel()))
+                .and(TicketSpecification.hasCategoryId(searchTicketRequestDto.getCategoryId()))
+                .and(TicketSpecification.hasSubcategoryId(searchTicketRequestDto.getSubcategoryId()))
+                .and(TicketSpecification.hasPriority(searchTicketRequestDto.getPriority()))
+                .and(TicketSpecification.hasOpenedById(searchTicketRequestDto.getOpenedById()))
+                .and(TicketSpecification.hasClosedById(searchTicketRequestDto.getClosedById()))
                 .and(TicketSpecification.createdAfter(createdAfterTimestamp))
                 .and(TicketSpecification.createdBefore(createdBeforeTimestamp));
 

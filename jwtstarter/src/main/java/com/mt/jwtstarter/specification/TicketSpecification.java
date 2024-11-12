@@ -3,6 +3,9 @@ package com.mt.jwtstarter.specification;
 import com.mt.jwtstarter.enums.Channel;
 import com.mt.jwtstarter.enums.Priority;
 import com.mt.jwtstarter.model.Ticket;
+import com.mt.jwtstarter.model.UserEntity;
+import com.mt.jwtstarter.model.UserTicketFollower;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.sql.Timestamp;
@@ -44,7 +47,25 @@ public class TicketSpecification {
             return criteriaBuilder.equal(root.get("isOpen"), isOpen);
         };
     }
+    public static Specification<Ticket> isFollowed(UserEntity user, Boolean isFollowed) {
+        return (root, query, criteriaBuilder) -> {
+            if (isFollowed == null) {
+                return criteriaBuilder.conjunction();
+            }
 
+            // Dołącz encję UserTicketFollower, aby uzyskać dostęp do relacji obserwujących
+            Join<Ticket, UserTicketFollower> followersJoin = root.join("followers");
+
+            // Warunek zależny od wartości isFollowed
+            if (isFollowed) {
+                // Zwróć tylko te tickety, które są obserwowane przez podanego użytkownika
+                return criteriaBuilder.equal(followersJoin.get("user"), user);
+            } else {
+                // Zwróć tickety, które nie są obserwowane przez podanego użytkownika
+                return criteriaBuilder.notEqual(followersJoin.get("user"), user);
+            }
+        };
+    }
     public static Specification<Ticket> hasChannel(Channel channel) {
         return (root, query, criteriaBuilder) -> {
             if (channel == null) {
