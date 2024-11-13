@@ -1,9 +1,6 @@
 package com.mt.jwtstarter.config;
 
-import com.mt.jwtstarter.exception.CategoryNotFound;
-import com.mt.jwtstarter.exception.CustomerNotFound;
-import com.mt.jwtstarter.exception.SubcategoryNotFound;
-import com.mt.jwtstarter.exception.UserNotFound;
+import com.mt.jwtstarter.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +52,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomerNotFound.class)
     public ResponseEntity<Object> handleUserNotFoundException(CustomerNotFound ex) {
+        Map<String, String> error = Collections.singletonMap("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(DepartmentNotFound.class)
+    public ResponseEntity<Object> handleDepartmentNotFoundException(DepartmentNotFound ex) {
         Map<String, String> error = Collections.singletonMap("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
