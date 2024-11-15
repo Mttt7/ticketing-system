@@ -30,24 +30,37 @@ public class DepartmentController {
     private ResponseEntity<DepartmentResponseDto> createDepartment(@RequestBody DepartmentRequestDto departmentRequestDto) {
         return ResponseEntity.ok(departmentService.createDepartment(departmentRequestDto));
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<DepartmentResponseDto> getDepartmentById(@PathVariable Long id){
+    public ResponseEntity<DepartmentResponseDto> getDepartmentById(@PathVariable Long id) {
         return ResponseEntity.ok(departmentService.getDepartmentById(id));
     }
 
     @GetMapping("/{id}/users")
     public ResponseEntity<Page<UserResponseDto>> getUsersByDepartment(@PathVariable Long id,
-                                                                     @RequestParam int pageNumber,
-                                                                     @RequestParam int pageSize) {
+                                                                      @RequestParam int pageNumber,
+                                                                      @RequestParam int pageSize) {
         return ResponseEntity.ok(userDepartmentService.getUsersByDepartment(id, pageNumber, pageSize));
     }
 
     @PostMapping("/assign/{userId}/{departmentId}")
-    public ResponseEntity<Map<String,String>> assignUserToDepartment(@PathVariable Long userId,
-                                                                     @PathVariable Long departmentId){
+    public ResponseEntity<Map<String, String>> assignUserToDepartment(@PathVariable Long userId,
+                                                                      @PathVariable Long departmentId) {
 
         return ResponseEntity.ok(userDepartmentService.assignUserToDepartment(userId, departmentId));
     }
 
+    @PostMapping("/add-subcategory/{departmentId}/{subcategoryId}")
+    public ResponseEntity<Map<String, String>> addSubcategoryToDepartment(@PathVariable Long departmentId,
+                                                                          @PathVariable Integer subcategoryId) {
 
+        return ResponseEntity.ok(departmentService.addSubcategoryToDepartment(departmentId, subcategoryId));
+    }
+
+    @DeleteMapping("/remove-subcategory/{departmentId}/{subcategoryId}")
+    public ResponseEntity<Map<String, String>> removeSubcategoryFromDepartment(@PathVariable Long departmentId,
+                                                                               @PathVariable Integer subcategoryId) {
+
+        return ResponseEntity.ok(departmentService.removeSubcategoryFromDepartment(departmentId, subcategoryId));
+    }
 }

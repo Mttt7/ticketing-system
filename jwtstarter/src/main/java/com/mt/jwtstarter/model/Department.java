@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "department",uniqueConstraints = {
+@Table(name = "department", uniqueConstraints = {
         @UniqueConstraint(columnNames = "name")
 })
 @Data
@@ -26,4 +26,7 @@ public class Department {
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany
+    private List<Subcategory> subcategories;
 }

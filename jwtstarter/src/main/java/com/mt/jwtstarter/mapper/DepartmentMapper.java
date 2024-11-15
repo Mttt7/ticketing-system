@@ -8,14 +8,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class DepartmentMapper {
 
-public static DepartmentResponseDto mapToDepartmentResponseDto(Department department){
+    public static DepartmentResponseDto mapToDepartmentResponseDto(Department department) {
         return DepartmentResponseDto.builder()
                 .id(department.getId())
                 .name(department.getName())
+                .subcategories(department.getSubcategories().stream().map(SubcategoryMapper::mapToSubcategoryResponseDto).toList())
                 .build();
     }
 
-    public static Department mapToDepartment(DepartmentRequestDto departmentRequestDto){
+    public static Department mapToDepartment(DepartmentRequestDto departmentRequestDto) {
         return Department.builder()
                 .name(departmentRequestDto.getName())
                 .build();

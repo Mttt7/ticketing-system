@@ -1,5 +1,6 @@
 package com.mt.jwtstarter.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +27,6 @@ public class Category {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @JsonManagedReference
     private List<Subcategory> subcategories;
 }

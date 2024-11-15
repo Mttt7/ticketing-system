@@ -1,9 +1,8 @@
 package com.mt.jwtstarter.controller;
 
 
-import com.mt.jwtstarter.model.Category;
-import com.mt.jwtstarter.repository.CategoryRepository;
-import com.mt.jwtstarter.repository.SubcategoryRepository;
+import com.mt.jwtstarter.dto.Category.CategoryResponseDto;
+import com.mt.jwtstarter.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,11 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class CategoryController {
-    private final CategoryRepository categoryRepository;
-    private final SubcategoryRepository subcategoryRepository;
+    private final CategoryService categoryService;
 
     @GetMapping("/")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        return ResponseEntity.ok().body(categoryRepository.findAll());
+    public ResponseEntity<List<CategoryResponseDto>> getAllCategories() {
+        return ResponseEntity.ok().body(categoryService.findAllCategories());
     }
 }
