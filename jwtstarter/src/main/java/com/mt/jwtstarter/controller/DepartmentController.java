@@ -50,6 +50,13 @@ public class DepartmentController {
         return ResponseEntity.ok(userDepartmentService.assignUserToDepartment(userId, departmentId));
     }
 
+    @DeleteMapping("/remove-user/{userId}/{departmentId}")
+    public ResponseEntity<Map<String, String>> removeUserFromDepartment(@PathVariable Long userId,
+                                                                        @PathVariable Long departmentId) {
+
+        return ResponseEntity.ok(userDepartmentService.removeUserFromDepartment(userId, departmentId));
+    }
+
     @PostMapping("/add-subcategory/{departmentId}/{subcategoryId}")
     public ResponseEntity<Map<String, String>> addSubcategoryToDepartment(@PathVariable Long departmentId,
                                                                           @PathVariable Integer subcategoryId) {

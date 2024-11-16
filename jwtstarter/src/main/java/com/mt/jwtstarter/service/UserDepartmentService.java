@@ -10,4 +10,6 @@ public interface UserDepartmentService {
     Map<String, String> assignUserToDepartment(Long userId, Long departmentId);
 
     Page<UserResponseDto> getUsersByDepartment(Long id, int pageNumber, int pageSize);
+
+    Map<String, String> removeUserFromDepartment(Long userId, Long departmentId);
 }

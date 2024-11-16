@@ -7,9 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface UserDepartmentRepository extends JpaRepository<UserDepartment, Long> {
 
     Boolean existsByUserAndDepartment(UserEntity user, Department department);
 
     Page<UserDepartment> findAllByDepartment(Department department, PageRequest of);
+
+    Optional<UserDepartment> findByUserAndDepartment(UserEntity user, Department department);
 }

@@ -53,4 +53,19 @@ public class UserDepartmentServiceImpl implements UserDepartmentService {
                 userDepartments.getTotalElements()
         );
     }
+
+    @Override
+    public Map<String, String> removeUserFromDepartment(Long userId, Long departmentId) {
+        Department department = departmentRepository.findById(departmentId).orElseThrow(
+                () -> new EntityNotFound("Department not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFound("User not found"));
+        if (!userDepartmentRepository.existsByUserAndDepartment(user, department)) {
+            return Map.of("message", "User not assigned to department or already removed");
+        }
+        UserDepartment userDepartment = userDepartmentRepository.findByUserAndDepartment(user, department).orElseThrow(
+                () -> new EntityNotFound("User not assigned to department"));
+        userDepartmentRepository.delete(userDepartment);
+        return Map.of("message", "User removed from department successfully");
+    }
 }
