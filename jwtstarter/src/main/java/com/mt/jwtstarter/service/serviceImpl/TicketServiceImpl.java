@@ -5,8 +5,7 @@ import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
-import com.mt.jwtstarter.exception.CategoryNotFound;
-import com.mt.jwtstarter.exception.UserNotFound;
+import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.mapper.TicketMapper;
 import com.mt.jwtstarter.mapper.UserMapper;
 import com.mt.jwtstarter.model.*;
@@ -43,13 +42,13 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponseDto createTicket(TicketRequestDto ticketRequestDto) {
         UserEntity user = authService.getLoggedUser();
         Category category = categoryRepository.findById(ticketRequestDto.getCategoryId()).orElseThrow(
-                () -> new CategoryNotFound("Category not found")
+                () -> new EntityNotFound("Category not found")
         );
         Subcategory subcategory = subcategoryRepository.findById(ticketRequestDto.getSubcategoryId()).orElseThrow(
-                () -> new CategoryNotFound("Subcategory not found")
+                () -> new EntityNotFound("Subcategory not found")
         );
         if (!category.getSubcategories().contains(subcategory)) {
-            throw new CategoryNotFound("Subcategory does not belong to the category");
+            throw new EntityNotFound("Subcategory does not belong to the category");
         }
 
         Ticket ticket = ticketMapper.mapToTicket(ticketRequestDto);
@@ -86,7 +85,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Map<String, String> followTicketForOtherUser(Long ticketId, Long userId) {
         UserEntity loggedUser = authService.getLoggedUser();
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFound("User not found"));
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new RuntimeException("Ticket not found"));
         UserTicketFollower utf = userTicketFollowerRepository.findByUserAndTicket(user, ticket).orElse(null);
         if (utf != null) {

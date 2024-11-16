@@ -1,6 +1,6 @@
 package com.mt.jwtstarter.config;
 
-import com.mt.jwtstarter.exception.*;
+import com.mt.jwtstarter.exception.EntityNotFound;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,32 +43,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-
-    @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFound ex) {
-        Map<String, String> error = Collections.singletonMap("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
-
-    @ExceptionHandler(CustomerNotFound.class)
-    public ResponseEntity<Object> handleUserNotFoundException(CustomerNotFound ex) {
-        Map<String, String> error = Collections.singletonMap("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
-
-    @ExceptionHandler(DepartmentNotFound.class)
-    public ResponseEntity<Object> handleDepartmentNotFoundException(DepartmentNotFound ex) {
-        Map<String, String> error = Collections.singletonMap("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
-
-    @ExceptionHandler(CategoryNotFound.class)
-    public ResponseEntity<Object> handleCategoryNotFoundException(CategoryNotFound ex) {
-        Map<String, String> error = Collections.singletonMap("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
-    @ExceptionHandler(SubcategoryNotFound.class)
-    public ResponseEntity<Object> handleUserNotFoundException(SubcategoryNotFound ex) {
+    @ExceptionHandler(EntityNotFound.class)
+    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFound ex) {
         Map<String, String> error = Collections.singletonMap("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }

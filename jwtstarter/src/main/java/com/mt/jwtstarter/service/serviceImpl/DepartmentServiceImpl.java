@@ -2,6 +2,7 @@ package com.mt.jwtstarter.service.serviceImpl;
 
 import com.mt.jwtstarter.dto.Department.DepartmentRequestDto;
 import com.mt.jwtstarter.dto.Department.DepartmentResponseDto;
+import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.mapper.DepartmentMapper;
 import com.mt.jwtstarter.model.Department;
 import com.mt.jwtstarter.model.Subcategory;
@@ -34,6 +35,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentResponseDto createDepartment(DepartmentRequestDto departmentResponseDto) {
+        departmentRepository.findByName(departmentResponseDto.getName()).ifPresent(
+                department -> {
+                    throw new EntityNotFound("Department already exists");
+                }
+        );
         Department department = DepartmentMapper.mapToDepartment(departmentResponseDto);
         return DepartmentMapper.mapToDepartmentResponseDto(departmentRepository.save(department));
     }
@@ -41,17 +47,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentResponseDto getDepartmentById(Long id) {
         return DepartmentMapper.mapToDepartmentResponseDto(departmentRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Department not found")
+                () -> new EntityNotFound("Department not found")
         ));
     }
 
     @Override
     public Map<String, String> addSubcategoryToDepartment(Long departmentId, Integer subcategoryId) {
         Department department = departmentRepository.findById(departmentId).orElseThrow(
-                () -> new RuntimeException("Department not found")
+                () -> new EntityNotFound("Department not found")
         );
         Subcategory subcategory = subcategoryRepository.findById(subcategoryId).orElseThrow(
-                () -> new RuntimeException("Subcategory not found")
+                () -> new EntityNotFound("Subcategory not found")
         );
         if (department.getSubcategories().contains(subcategory)) {
             return Map.of("message", "Subcategory already added to department");
@@ -64,10 +70,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Map<String, String> removeSubcategoryFromDepartment(Long departmentId, Integer subcategoryId) {
         Department department = departmentRepository.findById(departmentId).orElseThrow(
-                () -> new RuntimeException("Department not found")
+                () -> new EntityNotFound("Department not found")
         );
         Subcategory subcategory = subcategoryRepository.findById(subcategoryId).orElseThrow(
-                () -> new RuntimeException("Subcategory not found")
+                () -> new EntityNotFound("Subcategory not found")
         );
         if (department.getSubcategories().contains(subcategory)) {
             department.getSubcategories().remove(subcategory);

@@ -1,7 +1,7 @@
 package com.mt.jwtstarter.service.serviceImpl;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
-import com.mt.jwtstarter.exception.UserNotFound;
+import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.mapper.UserMapper;
 import com.mt.jwtstarter.model.UserEntity;
 import com.mt.jwtstarter.repository.UserRepository;
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserProfileById(Long userId) {
         return UserMapper.mapToUserResponseDto(userRepository.findById(userId).orElseThrow(
-                () -> new UserNotFound("User Not found!"))
+                () -> new EntityNotFound("User Not found!"))
         );
     }
 

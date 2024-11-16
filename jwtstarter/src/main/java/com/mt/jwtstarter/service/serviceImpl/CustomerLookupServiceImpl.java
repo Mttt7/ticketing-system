@@ -1,6 +1,6 @@
 package com.mt.jwtstarter.service.serviceImpl;
 
-import com.mt.jwtstarter.exception.CustomerNotFound;
+import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.model.Customer;
 import com.mt.jwtstarter.repository.CustomerRepository;
 import com.mt.jwtstarter.service.CustomerLookupService;
@@ -16,7 +16,7 @@ public class CustomerLookupServiceImpl implements CustomerLookupService {
     @Override
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id).orElseThrow(
-                () -> new CustomerNotFound("Customer not found")
+                () -> new EntityNotFound("Customer not found")
         );
     }
 }

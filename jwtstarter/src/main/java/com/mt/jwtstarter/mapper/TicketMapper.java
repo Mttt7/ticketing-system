@@ -2,8 +2,7 @@ package com.mt.jwtstarter.mapper;
 
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
-import com.mt.jwtstarter.exception.CategoryNotFound;
-import com.mt.jwtstarter.exception.SubcategoryNotFound;
+import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.model.*;
 import com.mt.jwtstarter.repository.CategoryRepository;
 import com.mt.jwtstarter.repository.SubcategoryRepository;
@@ -29,10 +28,10 @@ public class TicketMapper {
         UserEntity user = authService.getLoggedUser();
         Customer customer = customerLookupService.getCustomerById(ticketRequestDto.getCustomerId());
         Category category = categoryRepository.findById(ticketRequestDto.getCategoryId()).orElseThrow(
-                () -> new CategoryNotFound("Category not found")
+                () -> new EntityNotFound("Category not found")
         );
         Subcategory subcategory = subcategoryRepository.findById(ticketRequestDto.getSubcategoryId()).orElseThrow(
-                () -> new SubcategoryNotFound("Subcategory not found")
+                () -> new EntityNotFound("Subcategory not found")
         );
 
         return Ticket.builder()

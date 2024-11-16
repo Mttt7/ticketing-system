@@ -3,7 +3,7 @@ package com.mt.jwtstarter.service.serviceImpl;
 import com.mt.jwtstarter.dto.Customer.CustomerRequestDto;
 import com.mt.jwtstarter.dto.Customer.CustomerResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
-import com.mt.jwtstarter.exception.CustomerNotFound;
+import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.mapper.CustomerMapper;
 import com.mt.jwtstarter.mapper.TicketMapper;
 import com.mt.jwtstarter.model.Customer;
@@ -40,7 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerResponseDto getCustomerDtoById(Long id) {
         return CustomerMapper.mapToCustomerResponseDto(customerRepository.findById(id).orElseThrow(
-                () -> new CustomerNotFound("Customer not found")
+                () -> new EntityNotFound("Customer not found")
         ));
     }
 
@@ -66,7 +66,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerResponseDto updateCustomer(Long id, CustomerRequestDto customerRequestDto) {
         Customer customer = customerRepository.findById(id).orElseThrow(
-                () -> new CustomerNotFound("Customer not found")
+                () -> new EntityNotFound("Customer not found")
         );
         customer.setFirstName(customerRequestDto.getFirstName());
         customer.setLastName(customerRequestDto.getLastName());
@@ -78,7 +78,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Page<TicketResponseDto> getCustomerTickets(Long id, int pageNumber, int pageSize) {
         Customer customer = customerRepository.findById(id).orElseThrow(
-                () -> new CustomerNotFound("Customer not found")
+                () -> new EntityNotFound("Customer not found")
         );
         Page<Ticket> tickets = ticketRepository.findAllByCustomerId(id, PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()));
 
