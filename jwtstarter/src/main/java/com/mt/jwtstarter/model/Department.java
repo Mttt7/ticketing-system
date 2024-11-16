@@ -27,6 +27,6 @@ public class Department {
     @Column(name = "name")
     private String name;
 
-    @OneToMany
+    @ManyToMany
     private List<Subcategory> subcategories;
 }
