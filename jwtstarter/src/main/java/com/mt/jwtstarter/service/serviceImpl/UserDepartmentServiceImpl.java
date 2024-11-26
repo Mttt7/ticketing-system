@@ -1,6 +1,7 @@
 package com.mt.jwtstarter.service.serviceImpl;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
+import com.mt.jwtstarter.enums.NotificationType;
 import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.mapper.UserMapper;
 import com.mt.jwtstarter.model.Department;
@@ -9,6 +10,7 @@ import com.mt.jwtstarter.model.UserEntity;
 import com.mt.jwtstarter.repository.DepartmentRepository;
 import com.mt.jwtstarter.repository.UserDepartmentRepository;
 import com.mt.jwtstarter.repository.UserRepository;
+import com.mt.jwtstarter.service.NotificationService;
 import com.mt.jwtstarter.service.UserDepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ public class UserDepartmentServiceImpl implements UserDepartmentService {
     private final UserDepartmentRepository userDepartmentRepository;
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
+    private final NotificationService notificationService;
 
     @Override
     public Map<String, String> assignUserToDepartment(Long userId, Long departmentId) {
@@ -39,6 +42,7 @@ public class UserDepartmentServiceImpl implements UserDepartmentService {
         ud.setUser(user);
         ud.setDepartment(department);
         userDepartmentRepository.save(ud);
+        notificationService.createNotification(departmentId, NotificationType.NEW_DEPARTMENT_ASSIGNED, userId);
         return Map.of("message", "User assigned to department successfully");
     }
 

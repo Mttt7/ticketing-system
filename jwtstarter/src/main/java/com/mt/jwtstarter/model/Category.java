@@ -29,4 +29,9 @@ public class Category {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @JsonManagedReference
     private List<Subcategory> subcategories;
+
+    @Override
+    public String toString() {
+        return "Category{id=" + id + ", name='" + name + "'}";
+    }
 }

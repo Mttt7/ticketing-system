@@ -27,4 +27,9 @@ public class Subcategory {
     @JoinColumn(name = "category_id")
     @JsonBackReference
     private Category category;
+
+    @Override
+    public String toString() {
+        return "Subcategory{id=" + id + ", name='" + name + "'}";
+    }
 }

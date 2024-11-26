@@ -1,12 +1,10 @@
 package com.mt.jwtstarter.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mt.jwtstarter.enums.Channel;
 import com.mt.jwtstarter.enums.Priority;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -65,6 +63,8 @@ public class Ticket {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "ticket")
+    @JsonManagedReference
+    @ToString.Exclude
     private List<UserTicketFollower> followers;
 
     @UpdateTimestamp

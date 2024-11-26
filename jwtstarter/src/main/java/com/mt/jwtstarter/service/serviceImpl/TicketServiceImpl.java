@@ -5,12 +5,14 @@ import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
+import com.mt.jwtstarter.enums.NotificationType;
 import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.mapper.TicketMapper;
 import com.mt.jwtstarter.mapper.UserMapper;
 import com.mt.jwtstarter.model.*;
 import com.mt.jwtstarter.repository.*;
 import com.mt.jwtstarter.service.AuthService;
+import com.mt.jwtstarter.service.NotificationService;
 import com.mt.jwtstarter.service.TicketService;
 import com.mt.jwtstarter.specification.TicketSpecification;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ public class TicketServiceImpl implements TicketService {
     private final SubcategoryRepository subcategoryRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final NotificationService notificationService;
 
     @Override
     public TicketResponseDto createTicket(TicketRequestDto ticketRequestDto) {
@@ -95,7 +98,7 @@ public class TicketServiceImpl implements TicketService {
             userTicketFollower.setUser(user);
             userTicketFollower.setTicket(ticket);
             userTicketFollowerRepository.save(userTicketFollower);
-            //TODO: Send notification to user that someone(loggedUser) made him follow a ticket
+            notificationService.createNotification(ticket.getId(), NotificationType.NEW_TICKET_ASSIGNED, user.getId());
             return Map.of("message", "Ticket assigned to " + user.getEmail());
         }
     }
