@@ -1,11 +1,9 @@
 package com.mt.jwtstarter.enums;
 
 public enum NotificationType {
-    NEW_DEPARTMENT_ASSIGNED,
-    DEPARTMENT_REMOVED,
+    NEW_DEPARTMENT_ASSIGNED,//done
     NEW_TICKET_ASSIGNED,//done
     NEW_COMMENT_ON_FOLLOWED_TICKET, //done
-    NEW_USER_ON_DEPARTMENT,
     FOLLOWED_TICKET_CLOSED,
     ACTION_NEEDED_TIME,
 }

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserNotificationRepository userNotificationRepository;
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public Page<NotificationResponseDto> getAllUserNotifications(int pageNumber, int pageSize, Boolean onlyUnread) {
@@ -81,5 +83,6 @@ public class NotificationServiceImpl implements NotificationService {
         userNotification.setUser(user);
         userNotification.setNotification(notification);
         userNotificationRepository.save(userNotification);
+        messagingTemplate.convertAndSend("/topic/user/" + userId + "/notifications", notification);
     }
 }
