@@ -4,6 +4,7 @@ import com.mt.jwtstarter.dto.Auth.AuthResponseDto;
 import com.mt.jwtstarter.dto.Auth.LoginDto;
 import com.mt.jwtstarter.dto.Auth.RegisterDto;
 import com.mt.jwtstarter.model.UserEntity;
+
 import java.util.Map;
 
 public interface AuthService {
@@ -15,4 +16,6 @@ public interface AuthService {
     Map<String, String> registerUser(RegisterDto registerDto);
 
     Map<String, String> getSelfId();
+
+    Map<String, Boolean> validateJwt(Map<String, String> jwt);
 }

@@ -107,4 +107,9 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = getLoggedUser();
         return StringResponseMapper.mapToMap(String.valueOf(user.getId()));
     }
+
+    @Override
+    public Map<String, Boolean> validateJwt(Map<String, String> jwt) {
+        return Map.of("valid", jwtGenerator.validateToken(jwt.get("jwt")));
+    }
 }

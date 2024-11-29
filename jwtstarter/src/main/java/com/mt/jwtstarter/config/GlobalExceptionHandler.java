@@ -1,9 +1,11 @@
 package com.mt.jwtstarter.config;
 
 import com.mt.jwtstarter.exception.EntityNotFound;
+import com.mt.jwtstarter.mapper.StringResponseMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,6 +33,12 @@ public class GlobalExceptionHandler {
         response.put("details", errors);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleAuthenticationCredentialsNotFoundException(AuthenticationCredentialsNotFoundException ex) {
+
+        return new ResponseEntity<>(StringResponseMapper.mapToMap(ex.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
