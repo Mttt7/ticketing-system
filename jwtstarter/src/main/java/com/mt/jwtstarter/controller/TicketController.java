@@ -33,6 +33,11 @@ public class TicketController {
         return ResponseEntity.ok().body(ticketService.getTicketById(ticketId));
     }
 
+    @PostMapping("/{ticketId}/close")
+    public ResponseEntity<TicketResponseDto> closeTicket(@PathVariable Long ticketId) {
+        return ResponseEntity.ok().body(ticketService.closeTicket(ticketId));
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsByUserId(@PathVariable Long userId, @RequestParam int pageNumber, @RequestParam int pageSize,
                                                                               @RequestParam String sort) {

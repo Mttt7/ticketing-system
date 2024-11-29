@@ -1,10 +1,12 @@
 package com.mt.jwtstarter.service.serviceImpl;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
+import com.mt.jwtstarter.dto.Comment.CommentRequestDto;
 import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
+import com.mt.jwtstarter.enums.CommentType;
 import com.mt.jwtstarter.enums.NotificationType;
 import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.mapper.TicketMapper;
@@ -12,6 +14,7 @@ import com.mt.jwtstarter.mapper.UserMapper;
 import com.mt.jwtstarter.model.*;
 import com.mt.jwtstarter.repository.*;
 import com.mt.jwtstarter.service.AuthService;
+import com.mt.jwtstarter.service.CommentService;
 import com.mt.jwtstarter.service.NotificationService;
 import com.mt.jwtstarter.service.TicketService;
 import com.mt.jwtstarter.specification.TicketSpecification;
@@ -131,6 +134,31 @@ public class TicketServiceImpl implements TicketService {
                 .commentedTodayUser(commentedTodayUser)
                 .openFollowed(openFollowed)
                 .build();
+    }
+
+    @Override
+    public TicketResponseDto closeTicket(Long ticketId) {
+        UserEntity user = authService.getLoggedUser();
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new EntityNotFound("Ticket not found"));
+        ticket.setClosedBy(user);
+        ticket.setClosedAt(new Timestamp(System.currentTimeMillis()));
+        ticket.setIsOpen(Boolean.FALSE);
+        sendCommentAfterClosingTicket(ticket, user);
+        ticket.getFollowers().forEach(utf -> {
+            if (!utf.getUser().getId().equals(user.getId())) {
+                notificationService.createNotification(ticket.getId(), NotificationType.FOLLOWED_TICKET_CLOSED, utf.getUser().getId());
+            }
+        });
+        return ticketMapper.mapToTicketResponseDto(ticketRepository.save(ticket));
+    }
+
+    private void sendCommentAfterClosingTicket(Ticket ticket, UserEntity user){
+        Comment comment = new Comment();
+        comment.setContent("#Ticket closed# "+ticket.getClosedAt());
+        comment.setTicket(ticket);
+        comment.setAuthor(user);
+        comment.setCommentType(CommentType.INTERNAL_SYSTEM);
+        commentRepository.save(comment);
     }
 
     @Override
