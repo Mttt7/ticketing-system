@@ -1,10 +1,7 @@
 package com.mt.jwtstarter.service.serviceImpl;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
-import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
-import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
-import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
-import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
+import com.mt.jwtstarter.dto.Ticket.*;
 import com.mt.jwtstarter.enums.CommentType;
 import com.mt.jwtstarter.enums.NotificationType;
 import com.mt.jwtstarter.exception.EntityNotFound;
@@ -41,6 +38,7 @@ public class TicketServiceImpl implements TicketService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final NotificationService notificationService;
+    private final UserDepartmentRepository userDepartmentRepository;
 
     @Override
     public TicketResponseDto createTicket(TicketRequestDto ticketRequestDto) {
@@ -168,6 +166,30 @@ public class TicketServiceImpl implements TicketService {
         return ticketMapper.mapToTicketResponseDto(ticketRepository.save(ticket));
     }
 
+    @Override
+    public Page<TicketResponseDto> getTicketsByDepartments(int pageNumber, int pageSize, String sort, SearchTicketSimpleRequestDto searchTicketSimpleRequestDto) {
+        UserEntity user = authService.getLoggedUser();
+        Sort sortType = sort.equals("newest")
+                ? Sort.by("createdAt").descending()
+                : Sort.by("createdAt").ascending();
+
+        List<UserDepartment> uds = userDepartmentRepository.findAllByUser(user);
+        List<Department> departments = uds.stream().map(UserDepartment::getDepartment).toList();
+        List<Subcategory> subcategories = departments.stream().flatMap(department -> department.getSubcategories().stream()).toList();
+
+        Specification<Ticket> spec = Specification.where(TicketSpecification.isOpen(searchTicketSimpleRequestDto.getIsOpen()))
+                .and(TicketSpecification.isFollowed(authService.getLoggedUser(), searchTicketSimpleRequestDto.getIsFollowed()))
+                .and(TicketSpecification.hasPriority(searchTicketSimpleRequestDto.getPriority())
+                        .and(TicketSpecification.hasSubcategories(subcategories)));
+
+        Page<Ticket> tickets = ticketRepository.findAll(spec, PageRequest.of(pageNumber, pageSize, sortType));
+        return new PageImpl<>(
+                tickets.getContent().stream().map(ticketMapper::mapToTicketResponseDto).collect(Collectors.toList()),
+                PageRequest.of(pageNumber, pageSize, sortType),
+                tickets.getTotalElements()
+        );
+    }
+
     private void sendCommentAfterChangingCategory(Ticket ticket, UserEntity user, Category oldCategory, Subcategory oldSubcategory) {
         Comment comment = new Comment();
         comment.setContent("#Category changed# from " + oldCategory.getName() + "-" + oldSubcategory.getName() + " to " + ticket.getCategory().getName() +
@@ -241,7 +263,6 @@ public class TicketServiceImpl implements TicketService {
                                                  int pageNumber,
                                                  int pageSize, String sortType) {
 
-
         Timestamp createdAfterTimestamp = searchTicketRequestDto.getCreatedAfter() != null
                 ? Timestamp.valueOf(searchTicketRequestDto.getCreatedAfter().atStartOfDay()) : null;
         Timestamp createdBeforeTimestamp = searchTicketRequestDto.getCreatedBefore() != null
@@ -262,7 +283,6 @@ public class TicketServiceImpl implements TicketService {
                 .and(TicketSpecification.hasClosedById(searchTicketRequestDto.getClosedById()))
                 .and(TicketSpecification.createdAfter(createdAfterTimestamp))
                 .and(TicketSpecification.createdBefore(createdBeforeTimestamp));
-
         Page<Ticket> response;
         if (sortType.equals(("newest"))) {
             response = ticketRepository.findAll(spec, PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()));

@@ -1,10 +1,7 @@
 package com.mt.jwtstarter.controller;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
-import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
-import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
-import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
-import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
+import com.mt.jwtstarter.dto.Ticket.*;
 import com.mt.jwtstarter.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +49,11 @@ public class TicketController {
     @GetMapping("/followed")
     public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsForLoggedUser(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam String sort) {
         return ResponseEntity.ok().body(ticketService.getFollowedTickets(pageNumber, pageSize, sort));
+    }
+
+    @PostMapping("/my-departments")
+    public ResponseEntity<Page<TicketResponseDto>> searchTicketsByDepartments(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam String sortType, @RequestBody SearchTicketSimpleRequestDto searchTicketSimpleRequestDto) {
+        return ResponseEntity.ok().body(ticketService.getTicketsByDepartments(pageNumber, pageSize, sortType, searchTicketSimpleRequestDto));
     }
 
     @GetMapping("/{ticketId}/followers")

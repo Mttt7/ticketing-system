@@ -6,8 +6,12 @@ import com.mt.jwtstarter.exception.EntityNotFound;
 import com.mt.jwtstarter.mapper.DepartmentMapper;
 import com.mt.jwtstarter.model.Department;
 import com.mt.jwtstarter.model.Subcategory;
+import com.mt.jwtstarter.model.UserDepartment;
+import com.mt.jwtstarter.model.UserEntity;
 import com.mt.jwtstarter.repository.DepartmentRepository;
 import com.mt.jwtstarter.repository.SubcategoryRepository;
+import com.mt.jwtstarter.repository.UserDepartmentRepository;
+import com.mt.jwtstarter.service.AuthService;
 import com.mt.jwtstarter.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -22,6 +27,8 @@ import java.util.Map;
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final SubcategoryRepository subcategoryRepository;
+    private final AuthService authService;
+    private final UserDepartmentRepository userDepartmentRepository;
 
     @Override
     public Page<DepartmentResponseDto> getAllDepartments(int pageNumber, int pageSize) {
@@ -82,5 +89,13 @@ public class DepartmentServiceImpl implements DepartmentService {
         } else {
             return Map.of("message", "Subcategory not found in department or already removed");
         }
+    }
+
+    @Override
+    public List<DepartmentResponseDto> getDepartmentsByUser() {
+        UserEntity user = authService.getLoggedUser();
+        List<UserDepartment> uds = userDepartmentRepository.findAllByUser(user);
+        List<Department> departments = uds.stream().map(UserDepartment::getDepartment).toList();
+        return departments.stream().map(DepartmentMapper::mapToDepartmentResponseDto).toList();
     }
 }

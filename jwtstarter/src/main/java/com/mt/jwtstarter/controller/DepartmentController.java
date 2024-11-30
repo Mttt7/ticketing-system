@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,6 +25,11 @@ public class DepartmentController {
     private ResponseEntity<Page<DepartmentResponseDto>> getAllDepartments(@RequestParam int pageNumber,
                                                                           @RequestParam int pageSize) {
         return ResponseEntity.ok(departmentService.getAllDepartments(pageNumber, pageSize));
+    }
+
+    @GetMapping("/my-departments")
+    private ResponseEntity<List<DepartmentResponseDto>> getDepartmentsByUser() {
+        return ResponseEntity.ok(departmentService.getDepartmentsByUser());
     }
 
     @PostMapping("/")

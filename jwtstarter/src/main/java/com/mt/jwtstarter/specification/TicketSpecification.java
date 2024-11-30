@@ -2,6 +2,7 @@ package com.mt.jwtstarter.specification;
 
 import com.mt.jwtstarter.enums.Channel;
 import com.mt.jwtstarter.enums.Priority;
+import com.mt.jwtstarter.model.Subcategory;
 import com.mt.jwtstarter.model.Ticket;
 import com.mt.jwtstarter.model.UserEntity;
 import com.mt.jwtstarter.model.UserTicketFollower;
@@ -9,6 +10,7 @@ import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class TicketSpecification {
 
@@ -19,6 +21,9 @@ public class TicketSpecification {
             }
             return criteriaBuilder.equal(root.get("id"), ticketId);
         };
+    }
+    public static Specification<Ticket> hasSubcategories(List<Subcategory> subcategories) {
+        return (root, query, criteriaBuilder) -> root.get("subcategory").in(subcategories);
     }
 
     public static Specification<Ticket> hasCustomerId(Long customerId) {
