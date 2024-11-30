@@ -29,6 +29,7 @@ I'm currently wortking on:
 
 ## Communicate with Team to Solve Clients' Issues
 <img width="1088" alt="conv" src="https://github.com/user-attachments/assets/e5f97086-6c7b-4158-9724-073d7ee47f87">
+
 ![closing](https://github.com/user-attachments/assets/8a982939-d13f-4e88-a575-476b1de7c2b7)
 
 ## Live Notifications Using Websockets
