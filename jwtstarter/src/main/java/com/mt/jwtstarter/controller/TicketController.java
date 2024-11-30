@@ -83,9 +83,10 @@ public class TicketController {
     public Page<TicketResponseDto> searchTickets(
             @RequestBody SearchTicketRequestDto searchTicketRequestDto,
             @RequestParam(defaultValue = "0") int pageNumber,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "newest") String sortType) {
 
-        return ticketService.searchTickets(searchTicketRequestDto, pageNumber, pageSize);
+        return ticketService.searchTickets(searchTicketRequestDto, pageNumber, pageSize, sortType);
     }
 
     @GetMapping("/dashboard/stats")

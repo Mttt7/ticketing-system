@@ -19,7 +19,7 @@ public interface TicketService {
 
     Map<String, String> unfollowTicket(Long ticketId);
 
-    Page<TicketResponseDto> searchTickets(SearchTicketRequestDto searchTicketRequestDto, int pageNumber, int pageSize);
+    Page<TicketResponseDto> searchTickets(SearchTicketRequestDto searchTicketRequestDto, int pageNumber, int pageSize, String sortType);
 
     TicketResponseDto getTicketById(Long ticketId);
 

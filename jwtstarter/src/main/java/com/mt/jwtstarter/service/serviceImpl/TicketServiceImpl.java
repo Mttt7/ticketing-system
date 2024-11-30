@@ -239,7 +239,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Page<TicketResponseDto> searchTickets(SearchTicketRequestDto searchTicketRequestDto,
                                                  int pageNumber,
-                                                 int pageSize) {
+                                                 int pageSize, String sortType) {
 
 
         Timestamp createdAfterTimestamp = searchTicketRequestDto.getCreatedAfter() != null
@@ -263,7 +263,13 @@ public class TicketServiceImpl implements TicketService {
                 .and(TicketSpecification.createdAfter(createdAfterTimestamp))
                 .and(TicketSpecification.createdBefore(createdBeforeTimestamp));
 
-        Page<Ticket> response = ticketRepository.findAll(spec, PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending()));
+        Page<Ticket> response;
+        if (sortType.equals(("newest"))) {
+            response = ticketRepository.findAll(spec, PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()));
+        } else {
+            response = ticketRepository.findAll(spec, PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").ascending()));
+        }
+
         return new PageImpl<>(response.getContent().stream()
                 .map(ticketMapper::mapToTicketResponseDto)
                 .collect(Collectors.toList()), PageRequest.of(pageNumber, pageSize), response.getTotalElements());
