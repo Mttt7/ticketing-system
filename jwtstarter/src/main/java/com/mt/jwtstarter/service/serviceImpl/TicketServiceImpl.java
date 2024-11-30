@@ -1,7 +1,6 @@
 package com.mt.jwtstarter.service.serviceImpl;
 
 import com.mt.jwtstarter.dto.Auth.UserResponseDto;
-import com.mt.jwtstarter.dto.Comment.CommentRequestDto;
 import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
@@ -14,7 +13,6 @@ import com.mt.jwtstarter.mapper.UserMapper;
 import com.mt.jwtstarter.model.*;
 import com.mt.jwtstarter.repository.*;
 import com.mt.jwtstarter.service.AuthService;
-import com.mt.jwtstarter.service.CommentService;
 import com.mt.jwtstarter.service.NotificationService;
 import com.mt.jwtstarter.service.TicketService;
 import com.mt.jwtstarter.specification.TicketSpecification;
@@ -152,9 +150,37 @@ public class TicketServiceImpl implements TicketService {
         return ticketMapper.mapToTicketResponseDto(ticketRepository.save(ticket));
     }
 
-    private void sendCommentAfterClosingTicket(Ticket ticket, UserEntity user){
+    @Override
+    public TicketResponseDto changeCategory(Long ticketId, Integer categoryId, Integer subcategoryId) {
+        UserEntity user = authService.getLoggedUser();
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new EntityNotFound("Ticket not found"));
+        Subcategory subcategory = subcategoryRepository.findById(subcategoryId).orElseThrow(() -> new EntityNotFound("Subcategory not found"));
+        Category oldCategory = ticket.getCategory();
+        Subcategory oldSubcategory = ticket.getSubcategory();
+        ticket.setCategory(subcategory.getCategory());
+        ticket.setSubcategory(subcategory);
+        ticket.getFollowers().forEach(utf -> {
+            if (!utf.getUser().getId().equals(user.getId())) {
+                notificationService.createNotification(ticket.getId(), NotificationType.FOLLOWED_TICKET_CATEGORY_CHANGED, utf.getUser().getId());
+            }
+        });
+        sendCommentAfterChangingCategory(ticket, user, oldCategory, oldSubcategory);
+        return ticketMapper.mapToTicketResponseDto(ticketRepository.save(ticket));
+    }
+
+    private void sendCommentAfterChangingCategory(Ticket ticket, UserEntity user, Category oldCategory, Subcategory oldSubcategory) {
         Comment comment = new Comment();
-        comment.setContent("#Ticket closed# "+ticket.getClosedAt());
+        comment.setContent("#Category changed# from " + oldCategory.getName() + "-" + oldSubcategory.getName() + " to " + ticket.getCategory().getName() +
+                "-" + ticket.getSubcategory().getName());
+        comment.setTicket(ticket);
+        comment.setAuthor(user);
+        comment.setCommentType(CommentType.INTERNAL_SYSTEM);
+        commentRepository.save(comment);
+    }
+
+    private void sendCommentAfterClosingTicket(Ticket ticket, UserEntity user) {
+        Comment comment = new Comment();
+        comment.setContent("#Ticket closed# " + ticket.getClosedAt());
         comment.setTicket(ticket);
         comment.setAuthor(user);
         comment.setCommentType(CommentType.INTERNAL_SYSTEM);

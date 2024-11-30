@@ -5,8 +5,6 @@ import com.mt.jwtstarter.dto.Ticket.SearchTicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.StatsResponseDto;
 import com.mt.jwtstarter.dto.Ticket.TicketRequestDto;
 import com.mt.jwtstarter.dto.Ticket.TicketResponseDto;
-import com.mt.jwtstarter.model.Ticket;
-import com.mt.jwtstarter.model.UserEntity;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -37,4 +35,5 @@ public interface TicketService {
 
     TicketResponseDto closeTicket(Long ticketId);
 
+    TicketResponseDto changeCategory(Long ticketId, Integer categoryId, Integer subcategoryId);
 }

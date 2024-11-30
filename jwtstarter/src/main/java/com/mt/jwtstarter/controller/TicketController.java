@@ -38,6 +38,11 @@ public class TicketController {
         return ResponseEntity.ok().body(ticketService.closeTicket(ticketId));
     }
 
+    @PatchMapping("/{ticketId}/{categoryId}/{subcategoryId}")
+    public ResponseEntity<TicketResponseDto> changeCategory(@PathVariable Long ticketId, @PathVariable Integer categoryId, @PathVariable Integer subcategoryId) {
+        return ResponseEntity.ok().body(ticketService.changeCategory(ticketId, categoryId, subcategoryId));
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<TicketResponseDto>> getFollowedTicketsByUserId(@PathVariable Long userId, @RequestParam int pageNumber, @RequestParam int pageSize,
                                                                               @RequestParam String sort) {
